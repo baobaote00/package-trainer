@@ -29,7 +29,7 @@ return [
     'env' => 0,
     'load_from' => 'package-company::',
 
-    'company_status' => [
+    'trainer_status' => [
         'publish' => 99,
         'unpublish' => 33,
         'intrash' => 55,

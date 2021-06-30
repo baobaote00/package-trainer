@@ -1,11 +1,5 @@
 {
     "name": "baobaote00/package-trainer",
-    "authors": [
-        {
-            "name": "baobaote00",
-            "email": "baobaote00@gmail.com"
-        }
-    ],
     "require": {},
     "description": "Laravel authentication and ACL package with a cool admin panel. Laravel 7x",
     "keywords": [
@@ -18,17 +12,16 @@
     ],
     "authors": [
         {
-            "name": "foostart",
-            "email": "foostart.com@gmail.com",
-            "homepage": "http://www.foostart.com"
+            "name": "baobaote00",
+            "email": "baobaote00@gmail.com",
+            "homepage": "http://www.gachapro.xyz"
         }
     ],
     "license": "MIT",
     "require": {
         "laravelcollective/html": "6.2.1",
         "intervention/image": "2.*",
-        "foostart/package-category": "*",
-        "foostart/package-sentry": "*",
+        "foostart/package-company": "*",
         "gregwar/captcha": "1.1.9"
     },
     "require-dev": {

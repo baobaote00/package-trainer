@@ -24,7 +24,7 @@ use Foostart\Slideshow\Models\Slideshow;
 use Foostart\Company\Validators\CompanyValidator;
 
 
-class CompanyAdminController extends FooController
+class TrainerAdminController extends FooController
 {
 
     public $obj_item = NULL;
