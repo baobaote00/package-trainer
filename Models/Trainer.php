@@ -31,13 +31,14 @@ class Trainer extends FooModel
         $this->fillable = [
             'user_id',
             'company_id',
-            'is_leader'
+            'is_leader',
+            'trainer_status',
         ];
 
         //list of fields for inserting
         $this->fields = [
             'user_id' => [
-                'name' => 'user_id',
+                'name' => 'user',
                 'type' => 'Int',
             ],
             'company_id' => [
@@ -48,6 +49,10 @@ class Trainer extends FooModel
                 'name' => 'is_leader',
                 'type' => 'Int', //tinyint
             ],
+            'trainer_status' => [
+                'name' => 'trainer_status',
+                'type' => 'Int', //tinyint
+            ],
         ];
 
         //check valid fields for inserting
@@ -55,6 +60,13 @@ class Trainer extends FooModel
             'user_id',
             'company_id',
             'id_leader',
+        ];
+
+        //check valid fields for filter
+        $this->valid_filter_fields = [
+            'status',
+            '_id',
+            'limit',
         ];
 
         //check valid fields for ordering
@@ -79,7 +91,6 @@ class Trainer extends FooModel
      */
     public function selectItems($params = array())
     {
-
         //join to another tables
         $elo = $this->joinTable();
 
@@ -102,13 +113,48 @@ class Trainer extends FooModel
         return $items;
     }
     /**
+     * Get a company by {id}
+     * @param ARRAY $params list of parameters
+     * @return OBJECT company
+     */
+    public function selectItem($params = array(), $key = NULL)
+    {
+        if (empty($key)) {
+            $key = $this->primaryKey;
+        }
+
+        //join to another tables
+        $elo = $this->joinTable();
+
+        //search filters
+        $elo = $this->searchFilters($params, $elo, FALSE);
+
+
+        //select fields
+        $elo = $this->createSelect($elo);
+
+        //id
+        $elo = $elo->where($this->table . '.' . $this->primaryKey, $params['id']);
+
+        //first item
+        $item = $elo->first();
+
+        return $item;
+    }
+
+    /**
      *
      * @param ARRAY $params list of parameters
      * @return ELOQUENT OBJECT
      */
     protected function joinTable(array $params = [])
     {
-        return $this;
+        $elo = $this;
+
+        $elo = $elo->join('users', 'trainer.user_id', '=', 'users.id');
+        $elo = $elo->join('company', 'trainer.company_id', '=', 'company.company_id');
+
+        return $elo;
     }
     /**
      *
@@ -155,6 +201,7 @@ class Trainer extends FooModel
             $elo = $elo->where($this->table . '.' . $this->field_status, '=', $this->config_status['publish']);
         }
 
+
         return $elo;
     }
     /**
@@ -166,6 +213,9 @@ class Trainer extends FooModel
     {
         $elo = $elo->select(
             $this->table . '.*',
+            "users.*",
+            "company.company_name",
+            "company.company_id",
             $this->table . '.id as id'
         );
 
@@ -178,7 +228,7 @@ class Trainer extends FooModel
      */
     public function paginateItems(array $params = [], $elo)
     {
-        $items = $elo->paginate($this->perPage);
+        $items = $elo->paginate($this->perPage, array('users.*'));
 
         return $items;
     }
@@ -189,10 +239,9 @@ class Trainer extends FooModel
      */
     public function insertItem($params = [])
     {
-
         $dataFields = $this->getDataFields($params, $this->fields);
 
-        $dataFields[$this->field_status] = $this->config_status['publish'];
+        $dataFields[$this->field_status] = $dataFields[$this->field_status] ?? $this->config_status['publish'];
 
         $item = self::create($dataFields);
 
@@ -200,5 +249,65 @@ class Trainer extends FooModel
         $item->id = $item->$key;
 
         return $item;
+    }
+    /**
+     *
+     * @param ARRAY $input list of parameters
+     * @return boolean TRUE incase delete successfully otherwise return FALSE
+     */
+    public function deleteItem($input = [], $delete_type)
+    {
+        $item = $this->find($input['id']);
+
+        if ($item) {
+            switch ($delete_type) {
+                case 'delete-trash':
+                    return $item->fdelete($item);
+                    break;
+                case 'delete-forever':
+                    return $item->delete();
+                    break;
+            }
+        }
+
+        return false;
+    }
+    /**
+     *
+     * @param ARRAY $params list of parameters
+     * @param INT $id is primary key
+     * @return type
+     */
+    public function updateItem($params = [], $id = NULL)
+    {
+
+        if (empty($id)) {
+            $id = $params['id'];
+        }
+        $field_status = $this->field_status;
+
+        //get company item by conditions
+        $_params = [
+            'id' => $id,
+        ];
+
+        $company = $this->selectItem($_params);
+
+        $trainer = new Trainer();
+
+        if (!empty($company)) {
+
+            $dataFields = $this->getDataFields($params, $this->fields);
+
+            foreach ($dataFields as $key => $value) {
+                $company->$key = $value;
+            }
+
+            $company->save();
+
+            return $company;
+        } else {
+            return NULL;
+        }
     }
 }

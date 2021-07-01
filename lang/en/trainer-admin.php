@@ -10,7 +10,7 @@ return [
     |
     */
     'menus' => [
-        'top-menu' => 'Company'
+        'top-menu' => 'Trainer'
     ],
 
 
@@ -48,11 +48,11 @@ return [
     */
     'columns' => [
         'order' => '#',
-        'name' => 'Company name',
+        'name' => 'Trainer name',
         'operations' => 'Operations',
         'updated_at' => 'Updated at',
         'filename' => 'File name',
-        'company-status' => 'Status',
+        'trainer-status' => 'Status',
     ],
 
 
@@ -64,11 +64,11 @@ return [
     |
     */
     'pages' => [
-        'title-list' => 'List of companies',
+        'title-list' => 'List of trainer',
         'title-list-search' => 'Search results',
-        'title-edit' => 'Edit company',
-        'title-add' => 'Add new company',
-        'title-delete' => 'Delete company',
+        'title-edit' => 'Edit Trainer',
+        'title-add' => 'Add new Trainer',
+        'title-delete' => 'Delete Trainer',
         'title-config' => 'Current configurations',
         'title-lang' => 'Manage list of languages',
     ],
@@ -140,8 +140,8 @@ return [
     |
     */
     'descriptions' => [
-        'form' => 'Company form',
-        'update' => 'Update company',
+        'form' => 'Trainer form',
+        'update' => 'Update trainer',
         'name' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
         'slug' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
         'category' => 'Click <a href=":href">here</a> to manage list of categories by token.',
@@ -158,6 +158,8 @@ return [
         'not-found' => 'Not found items',
         'config' => 'List of configurations',
         'lang' => 'List of languages',
+        'user' => 'Select a user have permission trainer',
+        'company' => 'Select a company',
     ],
 
 
@@ -190,13 +192,15 @@ return [
     |
     */
     'fields' => [
-        'id' => 'Company ID',
-        'name' => 'Company name',
-        'description' => 'Company Description',
-        'overview' => 'Company Overview',
+        'id' => 'Trainer ID',
+        'name' => 'Trainer name',
+        'description' => 'Trainer Description',
+        'overview' => 'Trainer Overview',
         'slug' => 'Slug',
         'updated_at' => 'Updated at',
-        'status' => 'Status'
+        'status' => 'Status',
+        'user' => 'User',
+        'company' => 'Company'
     ],
 
 
@@ -212,16 +216,16 @@ return [
     |
     */
     'labels' => [
-        'name' => 'Company name',
-        'slug' => 'Company slug',
-        'overview' => 'Company overview',
-        'description' => 'Company description',
-        'image' => 'Company image',
-        'files' => 'Company files',
+        'name' => 'Trainer name',
+        'slug' => 'Trainer slug',
+        'overview' => 'Trainer overview',
+        'description' => 'Trainer description',
+        'image' => 'Trainer image',
+        'files' => 'Trainer files',
         'category' => 'Category name',
         'trainer' => 'Trainer',
         'slideshow' => 'Slideshow name',
-        'title-search' => 'Search company',
+        'title-search' => 'Search Trainer',
         'title-backup' => 'Backups',
         'config' => 'Configurations',
         'keyword' => 'Keyword',
@@ -229,6 +233,8 @@ return [
         'no-selected' => 'No selected',
         'status' => 'Status',
         'delete' => 'Delete',
+        'user' => 'User email',
+        'company' => "Company",
     ],
 
 

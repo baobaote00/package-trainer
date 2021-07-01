@@ -3,18 +3,7 @@ return [
 
     //Number of worlds
     'length' => [
-        'company_name' => [
-            'min' => 10,
-            'max' => 255,
-        ],
-        'company_overview' => [
-            'min' => 10,
-            'max' => 255,
-        ],
-        'company_description' => [
-            'min' => 255,
-            'max' => 0,//unlimit
-        ],
+        
     ],
     'per_page' => 1,
 
@@ -27,7 +16,7 @@ return [
     |
     */
     'env' => 0,
-    'load_from' => 'package-company::',
+    'load_from' => 'package-trainer::',
 
     'trainer_status' => [
         'publish' => 99,

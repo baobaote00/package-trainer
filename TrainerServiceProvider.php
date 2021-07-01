@@ -21,7 +21,7 @@ class TrainerServiceProvider extends ServiceProvider {
 //        $this->generateContextKey();
 
         // load view
-        $this->loadViewsFrom(__DIR__ . '/Views', 'package-company');
+        $this->loadViewsFrom(__DIR__ . '/Views', 'package-trainer');
 
         // include view composers
         require __DIR__ . "/composers.php";
@@ -59,7 +59,7 @@ class TrainerServiceProvider extends ServiceProvider {
      */
     protected function publishConfig() {
         $this->publishes([
-            __DIR__ . '/config/package-company.php' => config_path('package-company.php'),
+            __DIR__ . '/config/package-trainer.php' => config_path('package-trainer.php'),
                 ], 'config');
     }
 
@@ -81,13 +81,13 @@ class TrainerServiceProvider extends ServiceProvider {
      */
     protected function publishViews() {
         $this->publishes([
-            __DIR__ . '/Views' => base_path('resources/views/vendor/package-company'),
+            __DIR__ . '/Views' => base_path('resources/views/vendor/package-trainer'),
         ]);
     }
 
     protected function publishAssets() {
         $this->publishes([
-            __DIR__ . '/public' => public_path('packages/foostart/package-company'),
+            __DIR__ . '/public' => public_path('packages/baobaote00/'),
         ]);
     }
 

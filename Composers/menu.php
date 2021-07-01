@@ -16,13 +16,13 @@ use Foostart\Category\Helpers\SortTable;
 */
 
 View::composer([
-    'package-company::admin.company-edit',
-    'package-company::admin.company-form',
-    'package-company::admin.company-items',
-    'package-company::admin.company-item',
-    'package-company::admin.company-search',
-    'package-company::admin.company-config',
-    'package-company::admin.company-lang',
+    'package-trainer::admin.trainer-edit',
+    'package-trainer::admin.trainer-form',
+    'package-trainer::admin.trainer-items',
+    'package-trainer::admin.trainer-item',
+    'package-trainer::admin.trainer-search',
+    'package-trainer::admin.trainer-config',
+    'package-trainer::admin.trainer-lang',
 ], function ($view) {
 
     //Order by params
@@ -33,35 +33,23 @@ View::composer([
      * $plang-front
      */
 
-    $plang_admin = 'company-admin';
-    $plang_front = 'company-front';
+    $plang_admin = 'trainer-admin';
+    $plang_front = 'trainer-front';
 
     $fooCategory = new FooCategory();
-    $key = $fooCategory->getContextKeyByRef('admin/company');
+    $key = $fooCategory->getContextKeyByRef('admin/trainer');
 
     /**
      * $sidebar_items
      */
     $sidebar_items = [
-        trans('company-admin.sidebar.add') => [
-            'url' => URL::route('company.edit', []),
+        trans('trainer-admin.sidebar.add') => [
+            'url' => URL::route('trainer.edit', []),
             'icon' => '<i class="fa fa-pencil-square-o" aria-hidden="true"></i>'
         ],
-        trans('company-admin.sidebar.list') => [
-            "url" => URL::route('company.list', []),
+        trans('trainer-admin.sidebar.list') => [
+            "url" => URL::route('trainer.list', []),
             'icon' => '<i class="fa fa-list-ul" aria-hidden="true"></i>'
-        ],
-        trans('company-admin.sidebar.category') => [
-            'url'  => URL::route('categories.list', ['_key=' . $key]),
-            'icon' => '<i class="fa fa-sitemap" aria-hidden="true"></i>'
-        ],
-        trans('company-admin.sidebar.config') => [
-            "url" => URL::route('company.config', []),
-            'icon' => '<i class="fa fa-braille" aria-hidden="true"></i>'
-        ],
-        trans('company-admin.sidebar.lang') => [
-            "url" => URL::route('company.lang', []),
-            'icon' => '<i class="fa fa-language" aria-hidden="true"></i>'
         ],
     ];
 
@@ -72,8 +60,8 @@ View::composer([
     $orders = [
         '' => trans($plang_admin . '.form.no-selected'),
         'id' => trans($plang_admin . '.fields.id'),
-        'company_name' => trans($plang_admin . '.fields.name'),
-        'company_status' => trans($plang_admin . '.fields.status'),
+        'trainer_name' => trans($plang_admin . '.fields.name'),
+        'trainer_status' => trans($plang_admin . '.fields.status'),
         'updated_at' => trans($plang_admin . '.fields.updated_at'),
     ];
     $sortTable = new SortTable();

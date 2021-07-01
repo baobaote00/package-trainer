@@ -69,7 +69,7 @@ Route::group(['middleware' => ['web']], function () {
          * company
          */
         Route::post('admin/trainer/edit', [
-            'as' => 'trainer.company',
+            'as' => 'trainer.trainer',
             'uses' => 'TrainerAdminController@trainer'
         ]);
 

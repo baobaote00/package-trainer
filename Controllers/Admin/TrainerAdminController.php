@@ -19,15 +19,15 @@ use Illuminate\Support\Facades\App;
 
 use Foostart\Category\Library\Controllers\FooController;
 use Foostart\Company\Models\Company;
-use Foostart\Category\Models\Category;
 use Foostart\Slideshow\Models\Slideshow;
-use Foostart\Company\Validators\CompanyValidator;
-
+use Foostart\Trainer\Models\Trainer;
+use Foostart\Trainer\Validators\TrainerValidator;
 
 class TrainerAdminController extends FooController
 {
 
     public $obj_item = NULL;
+    public $obj_company = null;
     public $obj_category = NULL;
     public $context = NULL;
     public $categories = NULL;
@@ -39,23 +39,23 @@ class TrainerAdminController extends FooController
         parent::__construct();
 
         //models
-        $this->obj_item = new Company(array('perPage' => 10));
-        $this->obj_category = new Category();
+        $this->obj_item = new Trainer(array('perPage' => 10));
         $this->obj_slideshow = new Slideshow();
+        $this->obj_company = new Company();
 
         //validators
-        $this->obj_validator = new CompanyValidator();
+        $this->obj_validator = new TrainerValidator();
 
         //set language files
-        $this->plang_admin = 'company-admin';
-        $this->plang_front = 'company-front';
+        $this->plang_admin = 'trainer-admin';
+        $this->plang_front = 'trainer-front';
 
         //package name
-        $this->package_name = 'package-company';
-        $this->package_base_name = 'company';
+        $this->package_name = 'package-trainer';
+        $this->package_base_name = 'trainer';
 
         //root routers
-        $this->root_router = 'company';
+        $this->root_router = 'trainer';
 
         //page views
         $this->page_views = [
@@ -71,26 +71,24 @@ class TrainerAdminController extends FooController
         $this->data_view['status'] = $this->obj_item->getPluckStatus();
 
 
-        //set category context
-        $this->category_ref_name = 'admin/company';
+        $this->data_view['slideshow'] = $this->obj_slideshow->pluckSelect();
 
-        //get list of categories
-        $this->context = $this->obj_item->getContext($this->category_ref_name);
-        if ($this->context) {
-            $_params = [
-                'context_id' => $this->context->context_id
-            ];
-            $this->categories = $this->obj_category->pluckSelect($_params);
+        $company = [];
+        $allCompany = $this->obj_company->get();
+        for ($i = 0; $i < count($allCompany); $i++) {
+            $company[$allCompany[$i]["company_id"]] = $allCompany[$i]["company_name"];
         }
 
-        // $user = new User();
-        // $_params = [
-        //     'context_id' => $this->context->context_id
-        // ];
-        // $user->pluckSelect();
-        $this->data_view['categories'] = $this->categories;
-        $this->data_view['context'] = $this->context;
-        $this->data_view['slideshow'] = $this->obj_slideshow->pluckSelect();
+        $trainers = [];
+        $allUser = User::get();
+        for ($i = 0; $i < count($allUser); $i++) {
+            if ($allUser[$i]->hasPermission(["_trainer"])) {
+                $trainers[$allUser[$i]["id"]] = $allUser[$i]["email"];
+            }
+        }
+
+        $this->data_view["company"] = $company;
+        $this->data_view["user"] = $trainers;
 
         /**
          * Breadcrumb
@@ -119,7 +117,6 @@ class TrainerAdminController extends FooController
 
         $user = $this->getUser();
 
-        // dd($user);
 
         /**
          * Get current user and ignore admin
@@ -129,10 +126,12 @@ class TrainerAdminController extends FooController
         if ($is_admin) {
         } else if (empty($params['user_id']) || ($params['user_id'] != $user['user_id'])) {
 
-            return redirect()->route('company.list', ['user_id' => $user['user_id']]);
+            return redirect()->route('trainer.list', ['user_id' => $user['user_id']]);
         }
 
         $items = $this->obj_item->selectItems($params);
+
+        // dd($params);
 
         // display view
         $this->data_view = array_merge($this->data_view, array(
@@ -163,7 +162,6 @@ class TrainerAdminController extends FooController
          */
         $this->breadcrumb_3['label'] = 'Edit';
 
-        $checked = [];
         $item = NULL;
 
         /**
@@ -188,30 +186,13 @@ class TrainerAdminController extends FooController
 
             $item = $this->obj_item->selectItem($params, FALSE);
 
-            $category = $item->category_id()->get();
-
-            if (!empty($category)) {
-                foreach ($category as $value) {
-                    $checked[$value['category_id']] = $value['category_name'];
-                }
-            }
-
-            // dd($checked,$this->data_view['categories']);
-
             if (empty($item)) {
                 return Redirect::route($this->root_router . '.list')
                     ->withMessage(trans($this->plang_admin . '.actions.edit-error'));
             }
         }
 
-        // dd(User::get());
-        $trainers = [];
-        $allUser = User::get();
-        for ($i = 0; $i < count($allUser); $i++) {
-            if ($allUser[$i]->hasPermission(["_trainer"])) {
-                $trainers[$allUser[$i]["id"]] = $allUser[$i]["email"];
-            }
-        }
+        // dd($trainers);
 
         // display view
         $this->data_view = array_merge($this->data_view, array(
@@ -220,9 +201,8 @@ class TrainerAdminController extends FooController
             'breadcrumb_1' => $this->breadcrumb_1,
             'breadcrumb_2' => $this->breadcrumb_2,
             'breadcrumb_3' => $this->breadcrumb_3,
-            'trainers' => $trainers,
-            'category' => $checked,
         ));
+
         return view($this->page_views['admin']['edit'], $this->data_view);
     }
 
@@ -231,10 +211,8 @@ class TrainerAdminController extends FooController
      * @return view edit page
      * @date 27/12/2017
      */
-    public function company(Request $request)
+    public function trainer(Request $request)
     {
-        // dd($this->obj_item);
-
         $item = NULL;
 
         $params = array_merge($request->all(), $this->getUser());
@@ -243,7 +221,9 @@ class TrainerAdminController extends FooController
 
         $id = (int) $request->get('id');
 
+
         if ($is_valid_request && $this->obj_validator->validate($params)) { // valid data
+
 
             // update existing item
             if (!empty($id)) {
@@ -268,7 +248,6 @@ class TrainerAdminController extends FooController
 
                 // add new item
             } else {
-
                 $item = $this->obj_item->insertItem($params);
 
                 if (!empty($item)) {
@@ -501,8 +480,6 @@ class TrainerAdminController extends FooController
         $item = NULL;
         $params['id'] = $request->get('cid', NULL);
 
-        $context = $this->obj_item->getContext($this->category_ref_name);
-
         if (!empty($params['id'])) {
 
             $item = $this->obj_item->selectItem($params, FALSE);
@@ -520,7 +497,6 @@ class TrainerAdminController extends FooController
         $this->data_view = array_merge($this->data_view, array(
             'item' => $item,
             'request' => $request,
-            'context' => $context,
             'breadcrumb_1' => $this->breadcrumb_1,
             'breadcrumb_2' => $this->breadcrumb_2,
             'breadcrumb_3' => $this->breadcrumb_3,
